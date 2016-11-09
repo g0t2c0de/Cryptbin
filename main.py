@@ -12,6 +12,14 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 db = SQLAlchemy(app)
 
 
+class Bin(db.Model):
+    __tablename__ = 'Bin'
+    id = db.Column(db.BigInteger, primary_key =True)
+    dumb = db.Column(db.Text)
+    date_created = db.Column(db.DateTime)
+    expire = db.Column(db.DateTime)
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
