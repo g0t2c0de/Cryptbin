@@ -74,7 +74,7 @@ def encrypt():
 def dump(identity):
     long_id = int(get_long_id(identity))
     dump = Bin.query.get_or_404(long_id)
-
+    
     return render_template('decryption_page.html', identity=identity)
 
 

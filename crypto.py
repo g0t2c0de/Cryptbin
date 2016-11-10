@@ -37,20 +37,19 @@ def encrypt_dump(password, data):
     encryptor = cipher.encryptor()
 
     ct = encryptor.update(data.encode('utf-8')) + encryptor.finalize()
+
     tag = encryptor.tag
 
+    crypto_opt = {}
 
-    crypto_options = {}
+    opt = {'iv':iv,'salt':salt,'tag':tag,'ct':ct}
 
-    crypto_options['iv'] = b64encode(iv).decode('utf-8')
+    for key in opt:
+        crypto_opt[key] = b64encode(opt[key]).decode('utf-8')
 
-    crypto_options['salt'] = b64encode(salt).decode('utf-8')
-    crypto_options['iter'] = str(10000)
-    crypto_options['tag'] = b64encode(tag).decode('utf-8')
-    crypto_options['ct'] = b64encode(ct).decode('utf-8')
+    crypto_opt['iter'] = str(10000)
 
-
-    return crypto_options
+    return crypto_opt
 
 
 def decrypt_dump(password, option):
