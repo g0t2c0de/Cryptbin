@@ -69,9 +69,13 @@ def encrypt():
         return redirect(url_for('dump', identity=short_id))
 
 
-@app.route('/dump/<identity>')
+@app.route('/dump/<identity>', methods=['GET','POST'])
 def dump(identity):
-
+    long_id = get_long_id(identity)
+    dump = Bin.query.get_or_404(long_id)
+    if request.method == 'POST':
+        pass
+        
     return render_template('decryption_page.html', identity=identity)
 
 
