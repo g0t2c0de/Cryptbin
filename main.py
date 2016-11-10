@@ -2,6 +2,8 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from setup import DATABASE_URL
 
+from crypto import encrypt, decrypt
+
 app = Flask(__name__)
 
 
@@ -24,6 +26,7 @@ class Bin(db.Model):
 
 @app.route('/')
 def home():
+    
     return render_template('home.html')
 
 
