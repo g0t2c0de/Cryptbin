@@ -20,6 +20,8 @@ class Bin(db.Model):
     expire = db.Column(db.DateTime)
 
 
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
