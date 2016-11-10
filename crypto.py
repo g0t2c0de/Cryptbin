@@ -7,6 +7,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 
+from base64 import b64decode, b64encode
+
 
 def encrypt_dump(password, data):
 
@@ -39,11 +41,13 @@ def encrypt_dump(password, data):
 
 
     crypto_options = {}
-    crypto_options['iv'] = iv
-    crypto_options['salt'] = salt
-    crypto_options['iter'] = 10000
-    crypto_options['tag'] = tag
-    crypto_options['ct'] = ct
+
+    crypto_options['iv'] = b64encode(iv).decode('utf-8')
+
+    crypto_options['salt'] = b64encode(salt).decode('utf-8')
+    crypto_options['iter'] = str(10000)
+    crypto_options['tag'] = b64encode(tag).decode('utf-8')
+    crypto_options['ct'] = b64encode(ct).decode('utf-8')
 
 
     return crypto_options
@@ -53,6 +57,7 @@ def decrypt_dump(password, option):
 
     backend = default_backend()
 
+    
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=(128//8),

@@ -1,5 +1,6 @@
 import datetime
 import sys
+import json
 
 from random import SystemRandom
 
@@ -30,7 +31,7 @@ number_converter = BaseConverter(base)
 class Bin(db.Model):
     __tablename__ = 'Bin'
     id = db.Column(db.BigInteger, primary_key =True)
-    dumb = db.Column(db.Text)
+    dump = db.Column(db.PickleType)
     date_created = db.Column(db.DateTime)
     expire = db.Column(db.DateTime)
 
@@ -60,7 +61,7 @@ def encrypt():
 
         number = id_generator()
         dump = Bin(id=number,
-                   dumb=str(encrypt_dump(password,text)),
+                   dump=encrypt_dump(password,text),
                    date_created=datetime.datetime.utcnow())
         short_id = gen_short_id(number)
 
@@ -71,11 +72,9 @@ def encrypt():
 
 @app.route('/dump/<identity>', methods=['GET','POST'])
 def dump(identity):
-    long_id = get_long_id(identity)
+    long_id = int(get_long_id(identity))
     dump = Bin.query.get_or_404(long_id)
-    if request.method == 'POST':
-        pass
-        
+
     return render_template('decryption_page.html', identity=identity)
 
 
