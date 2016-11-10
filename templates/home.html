@@ -11,23 +11,23 @@
       <div class="card grey lighten-5 z-depth-2">
         <div class="card-content white-text">
 
-          <form method="POST">
+          <form method="POST" action='/encrypt'>
 
             <div class="row">
               <div class="input-field black-text">
-               <textarea id="textarea1" class="materialize-textarea"></textarea>
+               <textarea name='text' id="textarea1" class="materialize-textarea"></textarea>
               </div>
             </div>
 
             <div class="row">
-            <div class="input-field col s6 black-text">
-              <input id="password1"name="password" type="text">
-               <label>Password</label>
+              <div class="input-field col s6 black-text">
+                <input id="password1" name="password" type="text">
+                 <label>Password</label>
+              </div>
+              <div class="input-field col s6">
+                <input value="Submit" type="submit" class="btn grey darken-4">
+              </div>
             </div>
-            <div class="input-field col s6">
-              <input value="Submit" type="submit" class="btn grey darken-4">
-            </div>
-          </div>
 
           </form>
 

@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 
 
-def encrypt(password, data):
+def encrypt_dump(password, data):
 
     salt = os.urandom(16)
 
@@ -49,7 +49,7 @@ def encrypt(password, data):
     return crypto_options
 
 
-def decrypt(password, option):
+def decrypt_dump(password, option):
 
     backend = default_backend()
 
