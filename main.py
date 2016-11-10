@@ -22,6 +22,11 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 db = SQLAlchemy(app)
 
 
+characters  = 'abcdefghkmnpqrstwxyz'
+digits = '23456789'
+base = characters + characters.upper() + digits
+number_converter = BaseConverter(base)
+
 class Bin(db.Model):
     __tablename__ = 'Bin'
     id = db.Column(db.BigInteger, primary_key =True)
@@ -31,8 +36,14 @@ class Bin(db.Model):
 
 
 def id_generator():
-    id_num = SystemRandom().randint(1, sys.maxsize)
-    return id_num
+    return SystemRandom().randint(1, sys.maxsize)
+
+def gen_short_id(long_id):
+    return number_converter.encode(long_id)
+
+def get_long_id(short_id):
+    return number_converter.decode(short_id)
+
 
 
 @app.route('/')
@@ -47,19 +58,21 @@ def encrypt():
         text = request.form.get('text')
         password = request.form.get('password')
 
-        dump = Bin(id=id_generator(),
+        number = id_generator()
+        dump = Bin(id=number,
                    dumb=str(encrypt_dump(password,text)),
                    date_created=datetime.datetime.utcnow())
+        short_id = gen_short_id(number)
 
         db.session.add(dump)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('dump', identity=short_id))
 
 
 @app.route('/dump/<identity>')
 def dump(identity):
 
-    return render_template('home.html')
+    return render_template('decryption_page.html', identity=identity)
 
 
 if __name__ == '__main__':
