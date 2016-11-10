@@ -1,4 +1,9 @@
 import datetime
+import sys
+
+from random import SystemRandom
+
+from baseconv import BaseConverter
 
 from flask import Flask, render_template, request, redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -25,6 +30,11 @@ class Bin(db.Model):
     expire = db.Column(db.DateTime)
 
 
+def id_generator():
+    id_num = SystemRandom().randint(1, sys.maxsize)
+    return id_num
+
+
 @app.route('/')
 def home():
 
@@ -36,7 +46,11 @@ def encrypt():
     if request.method =='POST':
         text = request.form.get('text')
         password = request.form.get('password')
-        dump = Bin(id=878857845, dumb=str(encrypt_dump(password,text)), date_created=datetime.datetime.utcnow())
+
+        dump = Bin(id=id_generator(),
+                   dumb=str(encrypt_dump(password,text)),
+                   date_created=datetime.datetime.utcnow())
+
         db.session.add(dump)
         db.session.commit()
         return redirect(url_for('home'))
