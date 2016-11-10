@@ -57,12 +57,16 @@ def decrypt_dump(password, option):
 
     backend = default_backend()
 
-    
+    opt = ('iv','salt','tag','ct')
+
+    for key in opt:
+        option[key] =b64decode(option[key])
+
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=(128//8),
         salt=option['salt'],
-        iterations=option['iter'],
+        iterations=int(option['iter']),
         backend=backend
     )
     key = kdf.derive(password.encode('utf-8'))
