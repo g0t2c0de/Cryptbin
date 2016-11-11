@@ -91,6 +91,7 @@ def dump(identity):
     if request.method == 'GET':
 
         long_id = int(get_long_id(identity))
+        
         token = session['token']
 
         if token != None and confirm_token(token,long_id):
