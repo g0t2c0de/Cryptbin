@@ -13,7 +13,6 @@ from base64 import b64decode, b64encode
 def encrypt_dump(password, data):
 
     salt = os.urandom(16)
-
     iv = os.urandom(16)
 
     backend = default_backend()
@@ -52,30 +51,45 @@ def encrypt_dump(password, data):
     return crypto_opt
 
 
-def decrypt_dump(password, option):
+
+def check(password, option):
 
     backend = default_backend()
 
     opt = ('iv','salt','tag','ct')
 
+    opts = {}
     for key in opt:
-        option[key] =b64decode(option[key])
+        opts[key] =b64decode(option[key])
 
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=(128//8),
-        salt=option['salt'],
+        salt=opts['salt'],
         iterations=int(option['iter']),
         backend=backend
     )
+
     key = kdf.derive(password.encode('utf-8'))
+    iv = opts['iv']
+    tag = opts['tag']
+    ct = opts['ct']
+    return key,iv,tag, ct
+
+def decrypt_dump(password, data):
+
+    key, iv, tag, ct = check(password, data)
+    backend = default_backend()
+
 
     cipher = Cipher(
         algorithms.AES(key),
-        modes.GCM(option['iv'], option['tag']),
+        modes.GCM(iv, tag),
         backend=backend,
     )
 
     dec = cipher.decryptor()
-    pt = (dec.update(option['ct']) + dec.finalize()).decode('utf-8')
-    return pt
+    try:
+        return (dec.update(ct) + dec.finalize()).decode('utf-8')
+    except:
+        print('wrong password')
