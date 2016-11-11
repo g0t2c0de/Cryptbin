@@ -92,4 +92,4 @@ def decrypt_dump(password, data):
     try:
         return (dec.update(ct) + dec.finalize()).decode('utf-8')
     except:
-        print('wrong password')
+        return None
