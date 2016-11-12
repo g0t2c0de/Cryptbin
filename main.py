@@ -88,10 +88,10 @@ def encrypt():
 @app.route('/dump/<identity>', methods=['GET','POST'])
 def dump(identity):
 
+    long_id = int(get_long_id(identity))
+    dump = Bin.query.get_or_404(long_id)
 
     if request.method == 'GET':
-
-        long_id = int(get_long_id(identity))
 
         try:
             token = session['token']
@@ -107,8 +107,6 @@ def dump(identity):
 
     if request.method == 'POST':
 
-        long_id = int(get_long_id(identity))
-        dump = Bin.query.get_or_404(long_id)
         data = decrypt_dump(request.form.get('password'), dump.dump)
 
         if data:
@@ -116,10 +114,8 @@ def dump(identity):
             ## this should be redirect
             # however i need to find a better to do this
             return render_template('data_page.html',data=data)
-
         else:
             return redirect(url_for('dump', identity=gen_short_id(long_id)))
-
 
 
 if __name__ == '__main__':
