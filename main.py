@@ -35,6 +35,7 @@ class Bin(db.Model):
     expire = db.Column(db.DateTime)
 
 
+
 def gen_token(long_id):
     s = Serializer(app.config['SECRET_KEY'],expires_in=30)
     token = s.dumps({'id': long_id})
@@ -91,8 +92,11 @@ def dump(identity):
     if request.method == 'GET':
 
         long_id = int(get_long_id(identity))
-        
-        token = session['token']
+
+        try:
+            token = session['token']
+        except:
+            token = None
 
         if token != None and confirm_token(token,long_id):
             session['token'] = None
