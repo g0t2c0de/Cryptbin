@@ -15,14 +15,14 @@
 
             <div class="row">
               <div class="input-field black-text">
-               <textarea name='text' id="textarea1" class="materialize-textarea"></textarea>
+               <textarea data-error="wrong" data-success="right" required="" aria-required="true" name='text' id="textarea1" class="materialize-textarea"></textarea>
               </div>
             </div>
 
             <div class="row">
               <div class="input-field col s6 black-text">
-                <input id="password1" name="password" type="text">
-                 <label>Password</label>
+                <input id="password1" required="" aria-required="true" name="password" type="text">
+                 <label data-error="wrong" data-success="right">Password</label>
               </div>
               <div class="input-field col s6">
                 <input value="Submit" type="submit" class="btn grey darken-4">
