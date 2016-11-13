@@ -99,7 +99,7 @@ def dump(identity):
             token = None
 
         if token != None and confirm_token(token,long_id):
-            session['token'] = None
+            session.pop('token', None)
             return redirect(url_for('dump', identity=gen_short_id(long_id)))
 
         else:
