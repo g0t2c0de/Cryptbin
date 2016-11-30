@@ -6,19 +6,18 @@
     <div class="row">
 
       <form method='POST' action='/dump/{{identity}}'>
-
+        {{form.csrf_token}}
         <div class="col s12">
-          <div class="row">
-            <div class="input-field col s12">
-              <input required="" aria-required="true" name='password' id="password" type="password">
-              <label data-error="wrong"  for="password">Password</label>
+         <div class="row">
+            <div class="input-field col s6 black-text">
+              {{form.password.label}}
+              {{form.password}}
             </div>
           </div>
           <div class="row">
             <input type="submit" value="Submit" class="btn grey darken-4">
           </div>
         </div>
-
       </form>
 
     </div>
