@@ -1,18 +1,16 @@
 import datetime
 import sys
-import json
-
-from random import SystemRandom
 
 from baseconv import BaseConverter
+from random import SystemRandom
 
-from flask import Flask, render_template, request, redirect,url_for,make_response,session
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from setup import DATABASE_URL
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from crypto import encrypt_dump, decrypt_dump
+from setup import DATABASE_URL
 
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 app = Flask(__name__)
 
@@ -22,24 +20,25 @@ app.config['SECRET_KEY'] = 'N0\xbeW\xfau\xc3O<\x80F\xb9\x95\x1a\x1b\x07'
 
 db = SQLAlchemy(app)
 
-characters  = 'abcdefghkmnpqrstwxyz'
+characters = 'abcdefghkmnpqrstwxyz'
 digits = '23456789'
 base = characters + characters.upper() + digits
 number_converter = BaseConverter(base)
 
+
 class Bin(db.Model):
     __tablename__ = 'Bin'
-    id = db.Column(db.BigInteger, primary_key =True)
+    id = db.Column(db.BigInteger, primary_key=True)
     dump = db.Column(db.PickleType)
     date_created = db.Column(db.DateTime)
     expire = db.Column(db.DateTime)
-
 
 
 def gen_token(long_id):
     s = Serializer(app.config['SECRET_KEY'],expires_in=30)
     token = s.dumps({'id': long_id})
     return token
+
 
 def confirm_token(token,long_id):
     s = Serializer(app.config['SECRET_KEY'])
@@ -55,8 +54,10 @@ def confirm_token(token,long_id):
 def id_generator():
     return SystemRandom().randint(1, sys.maxsize)
 
+
 def gen_short_id(long_id):
     return number_converter.encode(long_id)
+
 
 def get_long_id(short_id):
     return number_converter.decode(short_id)
@@ -85,7 +86,7 @@ def encrypt():
         return redirect(url_for('dump', identity=short_id))
 
 
-@app.route('/dump/<identity>', methods=['GET','POST'])
+@app.route('/dump/<identity>', methods=['GET', 'POST'])
 def dump(identity):
 
     long_id = int(get_long_id(identity))
@@ -98,7 +99,7 @@ def dump(identity):
         except:
             token = None
 
-        if token != None and confirm_token(token,long_id):
+        if token and confirm_token(token, long_id):
             session.pop('token', None)
             return redirect(url_for('dump', identity=gen_short_id(long_id)))
 
@@ -113,10 +114,9 @@ def dump(identity):
             session['token'] = gen_token(long_id)
             ## this should be redirect
             # however i need to find a better to do this
-            return render_template('data_page.html',data=data)
+            return render_template('data_page.html', data=data)
         else:
             return redirect(url_for('dump', identity=gen_short_id(long_id)))
-
 
 if __name__ == '__main__':
 

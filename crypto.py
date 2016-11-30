@@ -1,8 +1,8 @@
 import os
 
 from cryptography.hazmat.primitives.ciphers import (
-    Cipher, algorithms, modes
-)
+    Cipher, algorithms, modes)
+
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
@@ -24,24 +24,22 @@ def encrypt_dump(password, data):
         iterations=10000,
         backend=backend
     )
-    key = kdf.derive(password.encode('utf-8'))
 
+    key = kdf.derive(password.encode('utf-8'))
 
     cipher = Cipher(
         algorithms.AES(key),
         modes.GCM(iv),
-        backend=backend,
+        backend=backend
     )
 
     encryptor = cipher.encryptor()
 
     ct = encryptor.update(data.encode('utf-8')) + encryptor.finalize()
-
     tag = encryptor.tag
-
     crypto_opt = {}
 
-    opt = {'iv':iv,'salt':salt,'tag':tag,'ct':ct}
+    opt = {'iv': iv, 'salt': salt, 'tag': tag, 'ct': ct}
 
     for key in opt:
         crypto_opt[key] = b64encode(opt[key]).decode('utf-8')
@@ -51,16 +49,15 @@ def encrypt_dump(password, data):
     return crypto_opt
 
 
-
 def check(password, option):
 
     backend = default_backend()
 
-    opt = ('iv','salt','tag','ct')
+    opt = ('iv', 'salt', 'tag', 'ct')
 
     opts = {}
     for key in opt:
-        opts[key] =b64decode(option[key])
+        opts[key] = b64decode(option[key])
 
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -74,13 +71,13 @@ def check(password, option):
     iv = opts['iv']
     tag = opts['tag']
     ct = opts['ct']
-    return key,iv,tag, ct
+    return key, iv, tag, ct
+
 
 def decrypt_dump(password, data):
 
     key, iv, tag, ct = check(password, data)
     backend = default_backend()
-
 
     cipher = Cipher(
         algorithms.AES(key),
@@ -89,6 +86,7 @@ def decrypt_dump(password, data):
     )
 
     dec = cipher.decryptor()
+
     try:
         return (dec.update(ct) + dec.finalize()).decode('utf-8')
     except:
