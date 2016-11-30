@@ -102,27 +102,22 @@ def encrypt():
 @app.route('/dump/<identity>', methods=['GET', 'POST'])
 def dump(identity):
 
+    form = DecryptForm()
     long_id = int(get_long_id(identity))
     dump = Bin.query.get_or_404(long_id)
 
-    if request.method == 'GET':
+    try:
+        token = session['token']
+    except:
+        token = None
 
-        try:
-            token = session['token']
-        except:
-            token = None
+    if token and confirm_token(token, long_id):
+        session.pop('token', None)
+        return redirect(url_for('dump', identity=gen_short_id(long_id)))
 
-        if token and confirm_token(token, long_id):
-            session.pop('token', None)
-            return redirect(url_for('dump', identity=gen_short_id(long_id)))
+    if form.validate_on_submit():
 
-        else:
-            return render_template('decryption_page.html', identity=identity)
-
-    if request.method == 'POST':
-
-        data = decrypt_dump(request.form.get('password'), dump.dump)
-
+        data = decrypt_dump(form.password.data, dump.dump)
         if data:
             session['token'] = gen_token(long_id)
             ## this should be redirect
@@ -130,6 +125,9 @@ def dump(identity):
             return render_template('data_page.html', data=data)
         else:
             return redirect(url_for('dump', identity=gen_short_id(long_id)))
+
+    return render_template('decryption_page.html', identity=identity, form=form)
+
 
 if __name__ == '__main__':
 
