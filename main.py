@@ -8,6 +8,11 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
+from flask_wtf import FlaskForm
+from wtforms.fields import PasswordField, TextAreaField, BooleanField
+from wtforms.validators import DataRequired
+
+
 from crypto import encrypt_dump, decrypt_dump
 from setup import DATABASE_URL
 
@@ -32,6 +37,13 @@ class Bin(db.Model):
     dump = db.Column(db.PickleType)
     date_created = db.Column(db.DateTime)
     expire = db.Column(db.DateTime)
+
+
+class BinForm(FlaskForm):
+    
+    dump = TextAreaField('Data', validators=[DataRequired])
+    password = PasswordField('password', validators=[DataRequired()])
+    confirm = BooleanField('Confirm', validators=[DataRequired])
 
 
 def gen_token(long_id):
@@ -70,7 +82,7 @@ def home():
 
 @app.route('/encrypt', methods=['POST'])
 def encrypt():
-    if request.method =='POST':
+    if request.method == 'POST':
         ## Need to put some exceptions here to validate data
         text = request.form.get('text')
         password = request.form.get('password')
