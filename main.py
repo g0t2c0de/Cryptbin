@@ -39,11 +39,14 @@ class Bin(db.Model):
     expire = db.Column(db.DateTime)
 
 
-class BinForm(FlaskForm):
-    
+class EncryptForm(FlaskForm):
     dump = TextAreaField('Data', validators=[DataRequired])
     password = PasswordField('password', validators=[DataRequired()])
     confirm = BooleanField('Confirm', validators=[DataRequired])
+
+
+class DecryptForm(FlaskForm):
+    password = PasswordField('password', validators=[DataRequired()])
 
 
 def gen_token(long_id):
@@ -52,7 +55,7 @@ def gen_token(long_id):
     return token
 
 
-def confirm_token(token,long_id):
+def confirm_token(token, long_id):
     s = Serializer(app.config['SECRET_KEY'])
     try:
         data = s.loads(token)
@@ -77,7 +80,8 @@ def get_long_id(short_id):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    form = EncryptForm()
+    return render_template('home.html', form=form)
 
 
 @app.route('/encrypt', methods=['POST'])
