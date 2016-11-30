@@ -1,7 +1,7 @@
-import datetime
 import sys
 
 from baseconv import BaseConverter
+from datetime import datetime
 from random import SystemRandom
 
 from flask import Flask, render_template, request, redirect, url_for, session
@@ -12,6 +12,7 @@ from flask_wtf import FlaskForm
 from wtforms.fields import PasswordField, TextAreaField, StringField
 from wtforms.validators import DataRequired
 
+from sqlalchemy import Column, BigInteger, PickleType, DateTime
 
 from crypto import encrypt_dump, decrypt_dump
 from setup import DATABASE_URL
@@ -33,10 +34,10 @@ number_converter = BaseConverter(base)
 
 class Bin(db.Model):
     __tablename__ = 'Bin'
-    id = db.Column(db.BigInteger, primary_key=True)
-    dump = db.Column(db.PickleType)
-    date_created = db.Column(db.DateTime)
-    expire = db.Column(db.DateTime)
+    id = Column(BigInteger, primary_key=True)
+    dump = Column(PickleType)
+    date_created = Column(DateTime)
+    expire = Column(DateTime)
 
 
 class EncryptForm(FlaskForm):
@@ -77,6 +78,7 @@ def get_long_id(short_id):
     return number_converter.decode(short_id)
 
 
+@app.route('/')
 @app.route('/encrypt', methods=['GET', 'POST'])
 def encrypt():
     form = EncryptForm()
@@ -88,7 +90,7 @@ def encrypt():
         number = id_generator()
         data = Bin(id=number,
                    dump=encrypt_dump(password, text),
-                   date_created=datetime.datetime.utcnow())
+                   date_created=datetime.utcnow())
         short_id = gen_short_id(number)
 
         db.session.add(data)
