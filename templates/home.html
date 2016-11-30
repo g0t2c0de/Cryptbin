@@ -12,21 +12,25 @@
         <div class="card-content white-text">
 
           <form method="POST" action='/encrypt'>
+            {{form.csrf_token}}
 
             <div class="row">
               <div class="input-field black-text">
-               <textarea data-error="wrong" data-success="right" required="" aria-required="true" name='text' id="textarea1" class="materialize-textarea"></textarea>
+                {{form.dump.label}}
+                {{form.dump(class='materialize-textarea black-text')}}
               </div>
             </div>
 
             <div class="row">
               <div class="input-field col s6 black-text">
-                <input id="password1" required="" aria-required="true" name="password" type="text">
-                 <label data-error="wrong" data-success="right">Password</label>
+                {{form.password.label}}
+                {{form.password}}
               </div>
+
               <div class="input-field col s6">
                 <input value="Submit" type="submit" class="btn grey darken-4">
               </div>
+
             </div>
 
           </form>

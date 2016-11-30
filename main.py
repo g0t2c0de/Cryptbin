@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from flask_wtf import FlaskForm
-from wtforms.fields import PasswordField, TextAreaField, BooleanField
+from wtforms.fields import PasswordField, TextAreaField, StringField
 from wtforms.validators import DataRequired
 
 
@@ -40,9 +40,8 @@ class Bin(db.Model):
 
 
 class EncryptForm(FlaskForm):
-    dump = TextAreaField('Data', validators=[DataRequired])
-    password = PasswordField('password', validators=[DataRequired()])
-    confirm = BooleanField('Confirm', validators=[DataRequired])
+    dump = TextAreaField('Data', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
 
 
 class DecryptForm(FlaskForm):
@@ -50,7 +49,7 @@ class DecryptForm(FlaskForm):
 
 
 def gen_token(long_id):
-    s = Serializer(app.config['SECRET_KEY'],expires_in=30)
+    s = Serializer(app.config['SECRET_KEY'], expires_in=30)
     token = s.dumps({'id': long_id})
     return token
 
@@ -78,28 +77,24 @@ def get_long_id(short_id):
     return number_converter.decode(short_id)
 
 
-@app.route('/')
-def home():
-    form = EncryptForm()
-    return render_template('home.html', form=form)
-
-
-@app.route('/encrypt', methods=['POST'])
+@app.route('/encrypt', methods=['GET', 'POST'])
 def encrypt():
-    if request.method == 'POST':
-        ## Need to put some exceptions here to validate data
-        text = request.form.get('text')
-        password = request.form.get('password')
+    form = EncryptForm()
+
+    if form.validate_on_submit():
+        text = form.dump.data
+        password = form.password.data
 
         number = id_generator()
-        dump = Bin(id=number,
-                   dump=encrypt_dump(password,text),
+        data = Bin(id=number,
+                   dump=encrypt_dump(password, text),
                    date_created=datetime.datetime.utcnow())
         short_id = gen_short_id(number)
 
-        db.session.add(dump)
+        db.session.add(data)
         db.session.commit()
         return redirect(url_for('dump', identity=short_id))
+    return render_template('home.html', form=form)
 
 
 @app.route('/dump/<identity>', methods=['GET', 'POST'])
