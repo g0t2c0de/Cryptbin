@@ -25,7 +25,10 @@ def encrypt_dump(password, data):
         backend=backend
     )
 
-    key = kdf.derive(password.encode('utf-8'))
+    try:
+        key = kdf.derive(password.encode('utf-8'))
+    except TypeError:
+        print('Password must be string character')
 
     cipher = Cipher(
         algorithms.AES(key),
@@ -35,7 +38,11 @@ def encrypt_dump(password, data):
 
     encryptor = cipher.encryptor()
 
-    ct = encryptor.update(data.encode('utf-8')) + encryptor.finalize()
+    try:
+        ct = encryptor.update(data.encode('utf-8')) + encryptor.finalize()
+    except Exception as e:
+        print(str(e))
+
     tag = encryptor.tag
     crypto_opt = {}
 
