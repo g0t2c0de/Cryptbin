@@ -92,9 +92,10 @@ def decrypt_dump(password, data):
         backend=backend,
     )
 
-    dec = cipher.decryptor()
+    decryptor = cipher.decryptor()
 
     try:
-        return (dec.update(ct) + dec.finalize()).decode('utf-8')
-    except:
+        return (decryptor.update(ct) + decryptor.finalize()).decode('utf-8')
+    except Exception as e:
+        print(str(e))
         return None
