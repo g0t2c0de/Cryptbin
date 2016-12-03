@@ -9,7 +9,6 @@
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>{% block title %}{% endblock %} Crypto Bin </title>
-      {% endblock %}
 
       <style>
 
@@ -34,6 +33,7 @@
       </style>
 
     </head>
+    {% endblock %}
 
     <body class="grey lighten-4">
 
@@ -62,9 +62,12 @@
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-        <script> $(".button-collapse").sideNav(); </script>
-
-
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.13/clipboard.min.js"></script>
+        <script> $(".button-collapse").sideNav();
+         (function(){
+        new Clipboard('#copy-button');
+        })();
+        </script>
       {% endblock %}
     </body>
 

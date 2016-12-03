@@ -1,5 +1,6 @@
 {% extends 'base.html'%}
 
+
 {% block page_content%}
 
 <div class="container">
@@ -15,11 +16,13 @@
             </div>
           </div>
           <div class="row">
-            <input type="submit" value="Submit" class="btn grey darken-4">
+            <input type="submit" value="Decrypt" class="btn grey darken-4">
           </div>
         </div>
       </form>
-
+        <button class="btn grey darken-4" id="copy-button" data-clipboard-text="http://localhost:5000/dump/{{identity}}">
+                    Copy Link
+        </button>
     </div>
 </div>
 
