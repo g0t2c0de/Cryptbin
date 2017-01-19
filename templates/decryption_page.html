@@ -3,14 +3,21 @@
 
 {% block page_content%}
 
-<div class="container">
-    <div class="row">
 
-      <form method='POST' action='/dump/{{identity}}'>
-        {{form.csrf_token}}
-        <div class="col s12">
+<div class="container">
+
+  <div class="row">
+  <div class="col s9 offset-s1">
+
+  <div class="card">
+      <div class="card-content black-text">
+        <span class="card-title">Encrypt Data</span>
+        <div class="row">
+
+         <form class="col s12" method='POST' action='/dump/{{identity}}'>
+             {{form.csrf_token}}
          <div class="row">
-            <div class="input-field col s6 black-text">
+            <div class="input-field col s12 black-text">
               {{form.password.label}}
               {{form.password}}
             </div>
@@ -18,13 +25,20 @@
           <div class="row">
             <input type="submit" value="Decrypt" class="btn grey darken-4">
           </div>
-        </div>
       </form>
-        <button class="btn grey darken-4" id="copy-button" data-clipboard-text="http://localhost:5000/dump/{{identity}}">
+        </div>
+        </div>
+      </div>
+
+      <button class="btn red accent-3" id="copy-button" data-clipboard-text="http://localhost:5000/dump/{{identity}}">
                     Copy Link
         </button>
-    </div>
+  </div>
 </div>
+<br><br>
+</div>
+
+
 
 
 {% endblock %}
