@@ -68,6 +68,12 @@
         new Clipboard('#copy-button');
         })();
         </script>
+        <script>
+          $('#copy-button').on('click', function(){
+              Materialize.toast('Link Copied!', 1500)
+            })
+
+        </script>
       {% endblock %}
     </body>
 
