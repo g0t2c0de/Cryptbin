@@ -6,7 +6,7 @@
 * Password protected content
 * Data cannot be read even if server and database are compromised
 
-# Packages Used
+## Packages Used
 
 * Flask
 * Postgresql
@@ -15,13 +15,18 @@
 * WTForms
 
 
-# Getting Started
+## Getting Started
 
-* pip install virtualenv
-* virtualenv mysiteenv
-* source mysiteenv/bin/activate (for windows mysiteenv\Scripts\activate)
-* pip install -r requirements.txt
-* python main.py
+```
+pip install virtualenv
+virtualenv mysiteenv
+source mysiteenv/bin/activate (for windows mysiteenv\Scripts\activate)
+pip install -r requirements.txt
+python main.py
+```
+
+Inspired by [Gregory Petukhov](https://github.com/lorien "lorien")
+
 
 # Demo
 ![alt text](https://github.com/ObsidianRock/Cryptbin/blob/master/video/full_demo_3.gif "Demo")
