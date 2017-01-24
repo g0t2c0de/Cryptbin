@@ -19,8 +19,8 @@
 
 ```
 pip install virtualenv
-virtualenv mysiteenv
-source mysiteenv/bin/activate (for windows mysiteenv\Scripts\activate)
+virtualenv venv
+source venv/bin/activate (for windows venv\Scripts\activate)
 pip install -r requirements.txt
 python main.py
 ```
